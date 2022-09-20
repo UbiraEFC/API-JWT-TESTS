@@ -7,3 +7,11 @@ test('should be ok', () => {
 
 	expect(user.name).toEqual('Bira');
 });
+
+test('should be Error', () => {
+	const user = new User();
+
+	user.name = 'Bir';
+
+	expect(user.name === 'Bira').toEqual(false);
+});

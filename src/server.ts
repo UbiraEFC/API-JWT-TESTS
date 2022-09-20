@@ -9,4 +9,6 @@ app.get('/', (request, response) => {
 	return response.json({ message: "Hello World" })
 });
 
-app.listen(config.port); 
+app.listen(config.port, () => {
+	console.info(`Server running on port ${config.port}!`)
+}); 
