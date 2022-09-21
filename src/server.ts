@@ -1,14 +1,6 @@
-import express from "express";
-import { config } from "./config/index";
-
-const app = express();
-
-app.use(express.json());
-
-app.get('/', (request, response) => {
-	return response.json({ message: "Hello World" })
-});
+import { app } from "./app";
+import { config } from "./config";
 
 app.listen(config.port, () => {
-	console.info(`Server running on port ${config.port}!`)
+	console.info(`Server Running on http://localhost:${config.port}`)
 }); 
