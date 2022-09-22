@@ -11,10 +11,22 @@ class CreateUserController {
 		const prismaUserRepository = new PrismaUserRepository();
 		const createuserUseCase = new CreateUserUseCase(prismaUserRepository);
 
-		await createuserUseCase.execute({
-			name, email, password, phones
-		});
-		return response.status(201).send()
+		try {
+
+			await createuserUseCase.execute({
+				name, 
+				email, 
+				password, 
+				phones
+			});
+
+			return response.status(201).send();
+
+		} catch (error: any) {
+
+			return response.status(error.statusCode).json({ message: error.message });
+
+		}
 	}
 }
 

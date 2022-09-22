@@ -1,5 +1,7 @@
-import { User } from "../../../modelsTests/User";
 import { CreateUserData, IUserRepository } from "../repositories/IUserRepository";
+import { hash } from "bcryptjs";
+import { AppError } from "../../../errors/AppError";
+import { existsOrError } from "../../../errors/ExistsOrError";
 
 interface CreateUserRequest {
 	name: string;
@@ -15,23 +17,43 @@ interface CreateUserRequest {
 
 export class CreateUserUseCase {
 	constructor(
-		private userrepository: IUserRepository
+		private userRepository: IUserRepository
 	) { }
 
+	async execute({
+		name,
+		email,
+		password,
+		phones
+	}: CreateUserRequest): Promise<void> {
 
+		try {
 
-	async execute({ name, email, password, phones }: CreateUserRequest) {
+			existsOrError(name, 'Name is required!');
+			existsOrError(email, 'Email is required!');
+			existsOrError(password, 'Password is required!');
+			existsOrError(phones, 'Phone is required!');
+			existsOrError(! await this.userRepository.findByEmail(email), 'Email already exists!');
+
+		} catch (msg: any) {
+
+			throw new AppError(msg);
+
+		}
+
+		const passwordHash = await hash(password, 8);
 
 		const queryUser: CreateUserData = {
 			data: {
 				name,
 				email,
-				password,
+				password: passwordHash,
 				phones: {
 					create: [...phones]
 				}
 			}
 		}
-		await this.userrepository.create( queryUser );
+
+		await this.userRepository.create(queryUser);
 	}
 }
