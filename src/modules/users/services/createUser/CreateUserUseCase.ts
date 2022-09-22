@@ -1,7 +1,8 @@
-import { CreateUserData, IUserRepository } from "../repositories/IUserRepository";
 import { hash } from "bcryptjs";
-import { AppError } from "../../../errors/AppError";
-import { existsOrError } from "../../../errors/ExistsOrError";
+import { AppError } from "../../../../errors/AppError";
+import { existsOrError } from "../../../../errors/ExistsOrError";
+import { IUserResponseDTO } from "../../dtos/IUserResponseDTO";
+import { CreateUserData, IUserRepository } from "../../repositories/IUserRepository";
 
 interface CreateUserRequest {
 	name: string;
@@ -25,7 +26,7 @@ export class CreateUserUseCase {
 		email,
 		password,
 		phones
-	}: CreateUserRequest): Promise<void> {
+	}: CreateUserRequest): Promise<IUserResponseDTO> {
 
 		try {
 
@@ -35,7 +36,7 @@ export class CreateUserUseCase {
 			existsOrError(phones, 'Phone is required!');
 			existsOrError(! await this.userRepository.findByEmail(email), 'Email already exists!');
 
-		} catch (msg: any) {
+		} catch (msg) {
 
 			throw new AppError(msg);
 
@@ -54,6 +55,15 @@ export class CreateUserUseCase {
 			}
 		}
 
-		await this.userRepository.create(queryUser);
+		const user = await this.userRepository.create(queryUser);
+
+		const userInfo = {
+			id: user.id,
+			created_at: user.created_at,
+			updated_at: user.updated_at,
+			last_login: user.last_login
+		}
+
+		return userInfo;
 	}
 }

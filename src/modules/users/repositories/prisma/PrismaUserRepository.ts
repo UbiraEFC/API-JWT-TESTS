@@ -4,11 +4,13 @@ import { CreateUserData, IUserRepository } from "../IUserRepository";
 
 export class PrismaUserRepository implements IUserRepository {
 	
-	async create(data: CreateUserData): Promise<void> {
-		await prismaClient.user.create(data);
+	async create(data: CreateUserData): Promise<User> {
+		const user = await prismaClient.user.create(data);
+
+		return user;
 	}
 	
-	async findByEmail(email: string): Promise<User | null> {
+	async findByEmail(email: string): Promise<User> {
 		const user = await prismaClient.user.findUnique({
 			where: {
 				email: email
@@ -21,8 +23,8 @@ export class PrismaUserRepository implements IUserRepository {
 		return user;
 	}
 
-	async findById(id: string): Promise<User | null> {
-		const user = await prismaClient.user.findUnique({
+	async findById(id: string): Promise<User> {
+		const user = await prismaClient.user.findFirst({
 			where: {
 				id: id
 			},

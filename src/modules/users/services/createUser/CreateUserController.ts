@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { PrismaUserRepository } from "../repositories/prisma/PrismaUserRepository";
+import { PrismaUserRepository } from "../../repositories/prisma/PrismaUserRepository";
 import { CreateUserUseCase } from "./CreateUserUseCase";
 
 
 
 class CreateUserController {
-	async handle(request: Request, response: Response): Promise<Response> {
+	async signUp(request: Request, response: Response): Promise<Response> {
 		const { name, email, password, phones } = request.body;
 
 		const prismaUserRepository = new PrismaUserRepository();
@@ -13,16 +13,16 @@ class CreateUserController {
 
 		try {
 
-			await createuserUseCase.execute({
+			const userInfo = await createuserUseCase.execute({
 				name, 
 				email, 
 				password, 
 				phones
 			});
 
-			return response.status(201).send();
+			return response.status(201).json(userInfo);
 
-		} catch (error: any) {
+		} catch (error) {
 
 			return response.status(error.statusCode).json({ message: error.message });
 
