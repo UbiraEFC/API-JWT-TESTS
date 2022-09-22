@@ -7,6 +7,9 @@
     "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules src/server.ts",
     "test": "jest"
   },
+  "prisma": {
+    "schema": "src/infra/prisma/schema.prisma"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
