@@ -16,20 +16,25 @@ export class AuthenticateUserUsecase {
 
 	async execute({ email, password }: AuthenticateUserRequest): Promise<IUserResponseDTO> {
 
-		const user = await this.userRepository.findByEmail(email);
-		const passwordMatch = await compare(password, user.password);
-
 		try {
-
 			existsOrError(email, 'Email is required!');
 			existsOrError(password, 'Password is required!');
-			// existsOrError(user, 'Email or password incorrect!');
-			// existsOrError(passwordMatch, 'Email or password incorrect!');
-
 		} catch (msg) {
-
 			throw new AppError(msg);
+		}
 
+		const user = await this.userRepository.findByEmail(email);
+		try {
+			existsOrError(user, 'Email or password incorrect!');
+		} catch (msg) {
+			throw new AppError(msg);
+		}
+
+		const passwordMatch = await compare(password, user.password);
+		try {
+			existsOrError(passwordMatch, 'Email or password incorrect!');
+		} catch (msg) {
+			throw new AppError(msg);
 		}
 
 		const tokenReturn = {
