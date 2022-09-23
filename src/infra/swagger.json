@@ -1,0 +1,209 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "API-CRUD-JWT-TEST",
+		"description": "Desafio de criação de uma API que utilissase conceitos de autentitação, testes com paradigma POO",
+		"version": "1.0.0",
+		"contact": {
+			"email": "ubirata@gmail.com"
+		}
+	},
+	"paths": {
+		"/users/signup": {
+			"post": {
+				"tags": [
+					"users"
+				],
+				"summary": "Criar um novo usuário.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"email": {
+										"type": "string"
+									},
+									"password": {
+										"type": "string"
+									},
+									"phones": [
+										{
+											"number": {
+												"type": "string"
+											},
+											"ddd": {
+												"type": "string"
+											}
+										}
+									]
+								},
+								"example": {
+									"name": "Bira",
+									"email": "bira@test.com",
+									"password": "123",
+									"phones": [
+										{
+											"number": "00000000",
+											"ddd": "00"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"token": {
+											"type": "string"
+										},
+										"user": {
+											"id": {
+												"type": "string"
+											},
+											"created_at": {
+												"type": "string"
+											},
+											"updated_at": {
+												"type": "string"
+											},
+											"last_login": {
+												"type": "string"
+											}
+										}
+									},
+									"example": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjM5NjM2MzMsImV4cCI6MTY2Mzk2NTQzMywic3ViIjoiZWIzNGUyNzEtZWJkOC00OWQ3LWExYTQtZTRlNzYzYjc4ZGNhIn0.AJghcF6TAkXRFs8u4qEXrW3P9_eRsXyY3rTDhdC_mZA",
+										"user": {
+											"id": "eb34e271-ebd8-49d7-a1a4-e4e763b78dca",
+											"created_at": "2022-09-23T20:07:13.585Z",
+											"updated_at": "2022-09-23T20:07:13.585Z",
+											"last_login": "2022-09-23T20:07:13.585Z"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Email already exists!",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": {
+											"type": "string"
+										}
+									},
+									"example": {
+										"error": "Email already exists!"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/users/signin": {
+			"post": {
+				"tags": [
+					"users"
+				],
+				"summary": "Recebe email, password e gera um Token de acesso temporário.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"email": {
+										"type": "string"
+									},
+									"password": {
+										"type": "string"
+									}
+								},
+								"example": {
+									"email": "bira@test.com",
+									"password": "123"
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"202": {
+						"description": "Accepted",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"token": {
+											"type": "string"
+										},
+										"user": {
+											"id": {
+												"type": "string"
+											},
+											"created_at": {
+												"type": "string"
+											},
+											"updated_at": {
+												"type": "string"
+											},
+											"last_login": {
+												"type": "string"
+											}
+										}
+									},
+									"example": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjM5NjM2MzMsImV4cCI6MTY2Mzk2NTQzMywic3ViIjoiZWIzNGUyNzEtZWJkOC00OWQ3LWExYTQtZTRlNzYzYjc4ZGNhIn0.AJghcF6TAkXRFs8u4qEXrW3P9_eRsXyY3rTDhdC_mZA",
+										"user": {
+											"id": "eb34e271-ebd8-49d7-a1a4-e4e763b78dca",
+											"created_at": "2022-09-23T20:07:13.585Z",
+											"updated_at": "2022-09-23T20:07:13.585Z",
+											"last_login": "2022-09-23T20:07:13.585Z"
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Email or password incorrect!",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": {
+											"type": "string"
+										}
+									},
+									"example": {
+										"error": "Email or password incorrect!"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
