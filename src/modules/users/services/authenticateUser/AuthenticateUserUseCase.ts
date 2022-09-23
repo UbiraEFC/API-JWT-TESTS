@@ -1,4 +1,6 @@
 import { compare } from "bcryptjs";
+import { sign } from "jsonwebtoken";
+import { config } from "../../../../config";
 import { AppError } from "../../../../errors/AppError";
 import { existsOrError } from "../../../../errors/ExistsOrError";
 import { IUserResponseDTO } from "../../dtos/IUserResponseDTO";
@@ -27,21 +29,29 @@ export class AuthenticateUserUsecase {
 		try {
 			existsOrError(user, 'Email or password incorrect!');
 		} catch (msg) {
-			throw new AppError(msg);
+			throw new AppError(msg, 401);
 		}
 
 		const passwordMatch = await compare(password, user.password);
 		try {
 			existsOrError(passwordMatch, 'Email or password incorrect!');
 		} catch (msg) {
-			throw new AppError(msg);
+			throw new AppError(msg, 418);
 		}
 
+		const token = sign({}, config.secretKey, {
+			subject: user.id,
+			expiresIn: config.expireTime
+		});
+
 		const tokenReturn = {
-			id: user.id,
-			created_at: user.created_at,
-			updated_at: user.updated_at,
-			last_login: user.last_login
+			token,
+			user: {
+				id: user.id,
+				created_at: user.created_at,
+				updated_at: user.updated_at,
+				last_login: user.last_login
+			}
 		}
 
 		return tokenReturn;

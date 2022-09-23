@@ -1,4 +1,6 @@
 import { hash } from "bcryptjs";
+import { sign } from "jsonwebtoken";
+import { config } from "../../../../config";
 import { AppError } from "../../../../errors/AppError";
 import { existsOrError } from "../../../../errors/ExistsOrError";
 import { IUserResponseDTO } from "../../dtos/IUserResponseDTO";
@@ -57,13 +59,21 @@ export class CreateUserUseCase {
 
 		const user = await this.userRepository.create(queryUser);
 
-		const userInfo = {
-			id: user.id,
-			created_at: user.created_at,
-			updated_at: user.updated_at,
-			last_login: user.last_login
+		const token = sign({}, config.secretKey, {
+			subject: user.id,
+			expiresIn: config.expireTime
+		});
+
+		const tokenReturn = {
+			token,
+			user: {
+				id: user.id,
+				created_at: user.created_at,
+				updated_at: user.updated_at,
+				last_login: user.last_login
+			}
 		}
 
-		return userInfo;
+		return tokenReturn;
 	}
 }
